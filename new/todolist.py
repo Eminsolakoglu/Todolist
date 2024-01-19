@@ -1,26 +1,24 @@
 import customtkinter
 from tkinter import messagebox
 import json
-
-# Uygulama başlangıcında kullanıcı adı ve şifre tanımları
 """
     LOGİN EKRANI USERNAME : emin 
     ŞİFRE : 123
+
+
+
 """
 
 customtkinter.set_appearance_mode("dark")
 customtkinter.set_default_color_theme("dark-blue")
-
 class ToDoListApp:
     def __init__(self, root):
         self.root = root
         self.root.title("To-do List Uygulaması")
 
-        # Giriş ekranını oluştur
         self.login_frame = customtkinter.CTkFrame(master=root)
         self.login_frame.pack(pady=20, padx=60, fill="both", expand=True)
 
-        # Giriş ekranı öğeleri
         self.label = customtkinter.CTkLabel(master=self.login_frame, text="Giriş Sistemi")
         self.label.pack(pady=12, padx=10)
 
@@ -36,12 +34,10 @@ class ToDoListApp:
         self.checkbox = customtkinter.CTkCheckBox(master=self.login_frame, text="Beni Hatırla")
         self.checkbox.pack(pady=12, padx=10)
 
-        # Görev ekranını oluştur
         self.todo_frame = customtkinter.CTkFrame(master=root)
         self.todo_frame.pack(pady=20, padx=60, fill="both", expand=True)
         self.todo_frame.pack_forget()
 
-        # Görev ekranı öğeleri
         self.task_entry = customtkinter.CTkEntry(master=self.todo_frame, width=50, height=5)
         self.task_entry.grid(row=0, column=0, padx=10, pady=10)
 
@@ -58,15 +54,12 @@ class ToDoListApp:
         self.show_button = customtkinter.CTkButton(master=self.todo_frame, text="Görevleri Göster", command=self.show_tasks)
         self.show_button.grid(row=2, column=0, columnspan=2, pady=10)
 
-        # Görevlerin depolanacağı sözlük
         self.tasks = {"Pazartesi": [], "Salı": [], "Çarşamba": [], "Perşembe": [], "Cuma": [], "Cumartesi": [], "Pazar": []}
 
-    # Görev verilerini dosyaya kaydetme
     def save_data(self, filename="tasks_data.txt"):
         with open(filename, "w") as file:
             json.dump(self.tasks, file)
 
-    # Görev verilerini dosyadan yükleme
     def load_data(self, filename="tasks_data.txt"):
         try:
             with open(filename, "r") as file:
@@ -78,7 +71,6 @@ class ToDoListApp:
             messagebox.showerror("JSON Çözme Hatası", f"'{filename}' dosyasındaki JSON çözme hatası: {e}")
             self.tasks = {"Pazartesi": [], "Salı": [], "Çarşamba": [], "Perşembe": [], "Cuma": [], "Cumartesi": [], "Pazar": []}
 
-    # Giriş işlemi
     def login(self):
         entered_username = self.entry1.get()
         entered_password = self.entry2.get()
@@ -90,7 +82,6 @@ class ToDoListApp:
             messagebox.showerror("Hata", "Geçersiz kimlik bilgileri")
             self.load_data()
 
-    # Görev ekleme işlemi
     def add_task(self):
         task = self.task_entry.get()
         day = self.day_combobox.get()
@@ -100,7 +91,6 @@ class ToDoListApp:
             self.save_data()  # Görev ekledikten sonra veriyi kaydet
         self.load_data()
 
-    # Görev silme işlemi
     def remove_task(self):
         task = self.task_entry.get()
         day = self.day_combobox.get()
@@ -113,7 +103,6 @@ class ToDoListApp:
                 messagebox.showerror("Hata", f"Görev '{task}' {day} gününde bulunamadı")
         self.load_data()
 
-    # Görevleri gösterme işlemi
     def show_tasks(self):
         day = self.day_combobox.get()
         if day:
@@ -123,4 +112,10 @@ class ToDoListApp:
             else:
                 messagebox.showinfo("Görev Yok", f"{day} günü için görev bulunmamaktadır")
         else:
-            messagebox.showerror("Hata", "Lütfen")
+            messagebox.showerror("Hata", "Lütfen bir gün seçin.")
+        self.load_data()
+
+if __name__ == "__main__":
+    root = customtkinter.CTk()
+    app = ToDoListApp(root)
+    root.mainloop()
